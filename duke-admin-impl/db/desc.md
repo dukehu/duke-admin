@@ -1,0 +1,1 @@
+# 此项目跟[duke-auth](https://github.com/dukehu/duke-auth.git)项目共用一个数据库
