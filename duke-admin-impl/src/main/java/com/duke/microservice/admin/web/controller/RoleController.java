@@ -1,10 +1,19 @@
 package com.duke.microservice.admin.web.controller;
 
+import com.duke.framework.web.Response;
 import com.duke.microservice.admin.api.RoleRestService;
 import com.duke.microservice.admin.service.RoleService;
+import com.duke.microservice.admin.vm.RoleDetailVM;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * Created duke on 2018/8/4
@@ -15,4 +24,52 @@ public class RoleController implements RoleRestService {
 
     @Autowired
     private RoleService roleService;
+
+    @ApiOperation(value = "新增角色", notes = "新增角色")
+    @PreAuthorize("hasAuthority('admin') or hasAuthority('admin_role_save')")
+    @Override
+    public Response<String> save(RoleDetailVM roleVM) {
+        roleService.save(roleVM);
+        return Response.ok();
+    }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "角色id", dataType = "string", paramType = "path", required = true)
+    })
+    @ApiOperation(value = "修改角色", notes = "修改角色")
+    @PreAuthorize("hasAuthority('admin') or hasAuthority('admin_role_update')")
+    @Override
+    public Response<String> update(@PathVariable(value = "id", required = false) String id,
+                                   RoleDetailVM roleVM) {
+        roleService.update(id, roleVM);
+        return Response.ok();
+    }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "角色id", dataType = "string", paramType = "path", required = true)
+    })
+    @ApiOperation(value = "删除角色", notes = "删除角色")
+    @PreAuthorize("hasAuthority('admin') or hasAuthority('admin_role_delete')")
+    @Override
+    public Response<String> delete(@PathVariable(value = "id", required = false) String id) {
+        roleService.delete(id);
+        return Response.ok();
+    }
+
+    @ApiOperation(value = "角色列表", notes = "角色列表")
+    @PreAuthorize("hasAuthority('admin') or hasAuthority('admin_role_select')")
+    @Override
+    public Response<List<RoleDetailVM>> select() {
+        return Response.ok(roleService.select());
+    }
+
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "角色id", dataType = "string", paramType = "path", required = true)
+    })
+    @ApiOperation(value = "角色详情", notes = "角色详情")
+    @PreAuthorize("hasAuthority('admin') or hasAuthority('admin_role_selectById')")
+    @Override
+    public Response<RoleDetailVM> selectById(@PathVariable(value = "id", required = false) String id) {
+        return Response.ok(roleService.selectById(id));
+    }
 }
