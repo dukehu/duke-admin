@@ -1,8 +1,17 @@
 package com.duke.microservice.admin.vm;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 /**
  * Created duke on 2018/8/4
  */
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserDetailVM {
 
     /**
@@ -49,91 +58,4 @@ public class UserDetailVM {
      * 头像
      */
     private String avatar;
-
-    public UserDetailVM() {
-    }
-
-    public UserDetailVM(String id, Integer gender, String realName, String nickName, String loginName, String mobile, String email, Integer status, String avatar) {
-        this.id = id;
-        this.gender = gender;
-        this.realName = realName;
-        this.nickName = nickName;
-        this.loginName = loginName;
-        this.mobile = mobile;
-        this.email = email;
-        this.status = status;
-        this.avatar = avatar;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public Integer getGender() {
-        return gender;
-    }
-
-    public void setGender(Integer gender) {
-        this.gender = gender;
-    }
-
-    public String getRealName() {
-        return realName;
-    }
-
-    public void setRealName(String realName) {
-        this.realName = realName;
-    }
-
-    public String getNickName() {
-        return nickName;
-    }
-
-    public void setNickName(String nickName) {
-        this.nickName = nickName;
-    }
-
-    public String getLoginName() {
-        return loginName;
-    }
-
-    public void setLoginName(String loginName) {
-        this.loginName = loginName;
-    }
-
-    public String getMobile() {
-        return mobile;
-    }
-
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
-    }
 }
