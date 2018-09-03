@@ -1,4 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.duke.microservice.admin.mapper.extend.ResourceExtendMapper">
+
+    <select id="selectByParentId" resultType="com.duke.microservice.admin.domain.basic.Resource">
+        <if test="parentId != null">
+            select id as id, parent_id as parentId, name as name
+            from auth_resource
+            where parent_id like #{parentId,jdbcType=VARCHAR}
+        </if>
+    </select>
+
+    <select id="selectByPathTreeLikeParentId" resultType="com.duke.microservice.admin.domain.basic.Resource">
+        <bind name="str" value="'%'+parentId+'%'"/>
+        select id as id, parent_id as parentId, name as name
+        from auth_resource
+        where path_tree like #{str,jdbcType=VARCHAR}
+    </select>
+
 </mapper>

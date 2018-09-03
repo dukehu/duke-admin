@@ -1,4 +1,38 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.duke.microservice.admin.mapper.extend.ResourceOperationCodeRExtendMapper">
+
+    <select id="selectByResourceId"
+            resultType="com.duke.microservice.admin.domain.extend.ResourceOperationCode">
+        select aoc.id             as operationCodeId,
+               ar.id              as resourceId,
+               aoc.controller     as controller,
+               aoc.request_method as requestMethod,
+               aoc.path           as path,
+               aoc.name           as operationName,
+               aoc.service_id     as serviceId
+        from auth_operation_code aoc
+                 inner join auth_resource_operation_code_r arocr on aoc.id = arocr.operation_code_id
+                 inner join auth_resource ar on arocr.resource_id = ar.id
+        where ar.id = #{resourceId, jdbcType=VARCHAR};
+    </select>
+
+    <select id="selectByResourceIdAndOperationCodeId"
+            resultType="com.duke.microservice.admin.domain.basic.ResourceOperationCodeR">
+        select id as id, resource_id as resourceId, operation_code_id as operationCodeId
+        from auth_resource_operation_code_r
+        where resource_id = #{resourceId, jdbcType=VARCHAR}
+          and operation_code_id = #{operationCodeId, jdbcType=VARCHAR};
+    </select>
+
+    <delete id="deleteByResourceIdAndOperationCodeIds">
+        delete
+        from auth_resource_operation_code_r
+        where resource_id = #{resourceId, jdbcType=VARCHAR}
+        and operation_code_id in
+        <foreach collection="operationCodeIds" item="operationCodeId" open="(" close=")" separator=",">
+            #{operationCodeId, jdbcType=VARCHAR}
+        </foreach>
+    </delete>
+
 </mapper>

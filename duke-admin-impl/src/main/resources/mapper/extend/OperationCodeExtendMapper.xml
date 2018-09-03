@@ -1,4 +1,62 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.duke.microservice.admin.mapper.extend.OperationCodeExtendMapper">
+
+    <select id="selectByServiceIdAndController"
+            resultType="com.duke.microservice.admin.domain.basic.OperationCode">
+        select id,
+        service_id as serviceId,
+        `name` as name,
+        `code` as code,
+        memo,
+        path,
+        controller,
+        request_method as requestMethod
+        from auth_operation_code
+        where 1 = 1
+        <if test="serviceId != null and serviceId != ''">
+            and service_id = #{serviceId, jdbcType=VARCHAR}
+        </if>
+        <if test="controller != null and controller != ''">
+            and controller = #{controller, jdbcType=VARCHAR}
+        </if>
+    </select>
+
+    <select id="selectByRequestMethodAndUrl"
+            resultType="com.duke.microservice.admin.domain.basic.OperationCode">
+        select id,
+        service_id as serviceId,
+        `name` as name,
+        `code` as code,
+        memo,
+        path,
+        controller,
+        request_method as requestMethod
+        from auth_operation_code
+        where 1 = 1
+        <if test="requestMethod != null and requestMethod != ''">
+            and request_method = #{requestMethod, jdbcType=VARCHAR}
+        </if>
+        <if test="url != null and url != ''">
+            <bind name="str" value="'%'+url+'%'"/>
+            and path like #{str, jdbcType=VARCHAR}
+        </if>
+    </select>
+
+
+    <select id="controllerList" resultType="java.lang.String">
+        select controller
+        from auth_operation_code
+        where service_id = #{serviceId, jdbcType=VARCHAR}
+        group by controller;
+    </select>
+
+    <select id="selectByIds" resultType="com.duke.microservice.admin.domain.basic.OperationCode">
+        select id as id, name as name
+        from auth_operation_code where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id, jdbcType=VARCHAR}
+        </foreach>
+    </select>
+
 </mapper>
