@@ -67,4 +67,18 @@ public class AdminConstants {
         @Getter
         private String statusDesc;
     }
+
+    /**
+     * 角色类型
+     */
+    @AllArgsConstructor
+    public enum ROLE_TYPE {
+        BUILT_IN(0, "内置角色"),
+        CUSTOMIZE(1, "自定义角色");
+
+        @Getter
+        private Integer typeCode;
+        @Getter
+        private String typeDesc;
+    }
 }

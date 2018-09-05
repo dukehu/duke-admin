@@ -5,14 +5,10 @@ import com.duke.framework.exception.BusinessException;
 import com.duke.framework.security.AuthUserDetails;
 import com.duke.framework.utils.SecurityUtils;
 import com.duke.framework.utils.ValidationUtils;
-import com.duke.microservice.admin.AdminConstants;
 import com.duke.microservice.admin.domain.basic.Resource;
 import com.duke.microservice.admin.mapper.basic.ResourceMapper;
 import com.duke.microservice.admin.mapper.extend.ResourceExtendMapper;
-import com.duke.microservice.admin.vm.AuthTreeVM;
-import com.duke.microservice.admin.vm.ResourceDetailVM;
-import com.duke.microservice.admin.vm.ResourceSetVM;
-import com.duke.microservice.admin.vm.ResourceTreeVM;
+import com.duke.microservice.admin.vm.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,43 +35,11 @@ public class ResourceService {
     @Autowired
     private ResourceOperationCodeRService resourceOperationCodeRService;
 
-    /**
-     * 添加模块
-     *
-     * @param name   模块名称
-     * @param code   模块code
-     * @param router 前端路由
-     * @param sort   模块序号
-     * @param memo   模块描述
-     */
-    public void saveModule(String name, String code, String router, Integer sort, String memo) {
-        ValidationUtils.notEmpty(name, "moduleName", "模块名称不能为空！");
-        ValidationUtils.notEmpty(code, "moduleName", "模块名称不能为空！");
-        ValidationUtils.notEmpty(router, "moduleName", "模块名称不能为空！");
-        ValidationUtils.notEmpty(sort, "moduleName", "模块名称不能为空！");
+    @Autowired
+    private ModuleService moduleService;
 
-        Date date = new Date();
-        AuthUserDetails userDetails = SecurityUtils.getCurrentUserInfo();
-        String userId = userDetails.getUserId();
-        Resource resource = new Resource();
-        resource.setId(code);
-        resource.setParentId("");
-        resource.setName(name);
-        resource.setCode(code);
-        resource.setType(AdminConstants.RESOURCE_TYPE.MODULE.getType());
-        resource.setIcon("");
-        resource.setSort(sort);
-        // todo
-        resource.setStatus(1);
-        resource.setRouter(router);
-        resource.setMemo(ObjectUtils.isEmpty(memo) ? "" : memo);
-        resource.setPathTree("/" + code + "/");
-        resource.setCreater(userId);
-        resource.setCreateTime(date);
-        resource.setModifier(userId);
-        resource.setModifyTime(date);
-        resourceMapper.insert(resource);
-    }
+    @Autowired
+    private RoleResourceRService roleResourceRService;
 
     /**
      * 新增/修改
@@ -100,6 +64,7 @@ public class ResourceService {
         AuthUserDetails userDetails = SecurityUtils.getCurrentUserInfo();
         String userId = userDetails.getUserId();
         if (CoreConstants.UPDATE.equals(type)) {
+            ValidationUtils.notEmpty(id, "resourceId", "资源id不能为空！");
             // 修改
             resource = this.exist(id);
         } else {
@@ -166,19 +131,23 @@ public class ResourceService {
     /**
      * 资源树
      *
+     * @param roleId   角色id
      * @param parentId 父节点id
      * @return List<ResourceTreeVM>
      */
     @Transactional(readOnly = true)
-    public List<ResourceTreeVM> resourceTree(String parentId) {
-        ValidationUtils.notEmpty(parentId, "moduleId", "父节点id不能为空！");
-
+    public List<ResourceTreeVM> resourceTree(String parentId, String roleId) {
         List<ResourceTreeVM> resourceTreeVMS = new ArrayList<>();
         List<Resource> resources = resourceExtendMapper.selectByPathTreeLikeParentId(parentId);
         if (!CollectionUtils.isEmpty(resources)) {
+            List<String> resourceIds = new ArrayList<>();
+            if (!ObjectUtils.isEmpty(roleId)) {
+                resourceIds = roleResourceRService.selectByRoleId(roleId);
+            }
+            List<String> finalResourceIds = resourceIds;
             resources.forEach(resource -> {
                 ResourceTreeVM resourceTreeVM = new ResourceTreeVM(
-                        resource.getId(), resource.getParentId(), resource.getName(), null
+                        resource.getId(), resource.getParentId(), resource.getName(), finalResourceIds.contains(resource.getId()), true, null
                 );
                 resourceTreeVMS.add(resourceTreeVM);
             });
@@ -190,11 +159,23 @@ public class ResourceService {
 
     private List<ResourceTreeVM> buildTree(List<ResourceTreeVM> treeNodes, String rootId) {
         List<ResourceTreeVM> resourceTreeVMS = new ArrayList<>();
-        treeNodes.forEach(treeNode -> {
-            if (rootId.equals(treeNode.getKey())) {
-                resourceTreeVMS.add(findChildren(treeNode, treeNodes));
-            }
-        });
+        if (!ObjectUtils.isEmpty(rootId)) {
+            treeNodes.forEach(treeNode -> {
+                if (rootId.equals(treeNode.getKey())) {
+                    resourceTreeVMS.add(findChildren(treeNode, treeNodes));
+                }
+            });
+        } else {
+            List<ModuleDetailVM> moduleDetailVMS = moduleService.select();
+            moduleDetailVMS.forEach(moduleDetailVM -> {
+                treeNodes.forEach(treeNode -> {
+                    if (moduleDetailVM.getId().equals(treeNode.getKey())) {
+                        resourceTreeVMS.add(findChildren(treeNode, treeNodes));
+                    }
+                });
+            });
+        }
+
         return resourceTreeVMS;
     }
 
@@ -224,5 +205,21 @@ public class ResourceService {
             throw new BusinessException("id为" + id + "的资源不存在！");
         }
         return resource;
+    }
+
+    /**
+     * 批量校验资源id合法性
+     *
+     * @param ids 资源id集合
+     */
+    @Transactional(readOnly = true)
+    public List<Resource> exist(List<String> ids) {
+        ValidationUtils.notEmpty(ids, "resourceIds", "资源id集合不能为空！");
+        List<Resource> resources = resourceExtendMapper.selectByIds(ids);
+
+        if (!CollectionUtils.isEmpty(resources) && (resources.size() != ids.size())) {
+            throw new BusinessException("存在无效的或者不合法的资源id！");
+        }
+        return resources;
     }
 }

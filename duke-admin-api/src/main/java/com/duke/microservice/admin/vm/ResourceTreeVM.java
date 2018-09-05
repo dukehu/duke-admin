@@ -22,5 +22,9 @@ public class ResourceTreeVM {
 
     private String title;
 
+    private Boolean checked = false;
+
+    private Boolean expand = true;
+
     private List<ResourceTreeVM> children;
 }

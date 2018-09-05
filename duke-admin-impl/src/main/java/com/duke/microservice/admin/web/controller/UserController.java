@@ -6,6 +6,7 @@ import com.duke.framework.web.Response;
 import com.duke.microservice.admin.api.UserRestService;
 import com.duke.microservice.admin.service.UserService;
 import com.duke.microservice.admin.vm.UserDetailVM;
+import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -13,6 +14,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -27,11 +29,16 @@ public class UserController implements UserRestService {
     @Autowired
     private UserService userService;
 
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "keyword", value = "关键字", dataType = "string", paramType = "query", required = true),
+            @ApiImplicitParam(name = "page", value = "当前页码", dataType = "string", paramType = "query", required = true),
+            @ApiImplicitParam(name = "size", value = "每页条数", dataType = "string", paramType = "query", required = true)
+    })
     @ApiOperation(value = "用户列表查询", notes = "用户列表查询")
     @PreAuthorize("hasAuthority('admin') or hasAuthority('admin_user_select')")
     @Override
-    public Response<List<UserDetailVM>> select() {
-        return Response.ok(userService.select());
+    public Response<PageInfo<UserDetailVM>> select(String keyword, Integer page, Integer size) {
+        return Response.ok(userService.select(keyword, page, size));
     }
 
     @ApiImplicitParams({

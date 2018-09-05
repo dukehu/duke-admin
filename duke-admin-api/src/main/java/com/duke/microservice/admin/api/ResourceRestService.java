@@ -44,7 +44,7 @@ public interface ResourceRestService {
      * @param resourceSaveVM 资源修改vm
      * @return String
      */
-    @RequestMapping(value = "/resource/{id}", method = RequestMethod.POST)
+    @RequestMapping(value = "/resource/{id}", method = RequestMethod.PUT)
     Response<String> update(
             @PathVariable(value = "id", required = false) String id,
             @RequestParam(value = "resourceSaveVM", required = false) ResourceSetVM resourceSaveVM);
@@ -61,9 +61,12 @@ public interface ResourceRestService {
     /**
      * 资源树
      *
+     * @param roleId   角色id
      * @param parentId 模块id
      * @return List<ResourceTreeVM>
      */
     @RequestMapping(value = "/resource/tree", method = RequestMethod.GET)
-    Response<List<ResourceTreeVM>> resourceTree(@RequestParam(value = "parentId", required = false) String parentId);
+    Response<List<ResourceTreeVM>> resourceTree(
+            @RequestParam(value = "parentId", required = false) String parentId,
+            @RequestParam(value = "roleId", required = false) String roleId);
 }

@@ -14,6 +14,26 @@
                create_time  as createTime,
                modify_time  as modifyTime,
                avatar       as avatar
-        from auth_user;
+        from auth_user
+    </select>
+    <select id="selectByIds" resultType="com.duke.microservice.admin.domain.basic.User">
+        <if test="ids != null and ids.size() > 0">
+            select
+            id as id,
+            gender as gender,
+            real_name as realName,
+            nick_name as nickName,
+            login_name as loginName,
+            login_mobile as loginMobile,
+            login_email as loginEmail,
+            `status` as status,
+            create_time as createTime,
+            modify_time as modifyTime,
+            avatar as avatar
+            from auth_user where status = 1 and id in
+            <foreach collection="ids" item="id" separator="," open="(" close=")">
+                #{id, jdbcType=VARCHAR}
+            </foreach>
+        </if>
     </select>
 </mapper>

@@ -93,6 +93,6 @@ public interface OperationCodeRestService {
      * @param serviceId 服务id
      * @return List<String>
      */
-    @RequestMapping(value = "/resource/controller/{serviceId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/operation_code/controller/{serviceId}", method = RequestMethod.GET)
     Response<List<String>> controller(@PathVariable(value = "serviceId", required = false) String serviceId);
 }

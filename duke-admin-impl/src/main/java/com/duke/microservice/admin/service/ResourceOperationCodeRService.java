@@ -84,13 +84,13 @@ public class ResourceOperationCodeRService {
                         String name = operationCode.getOperationName();
                         String requestMethod = operationCode.getRequestMethod();
                         String path = operationCode.getPath();
-                        AuthTreeVM authTreeVM = new AuthTreeVM(id, name + "：(" + requestMethod + path + ")", null);
+                        AuthTreeVM authTreeVM = new AuthTreeVM(id, name + "：(" + requestMethod + path + ")", false, true, null);
                         operationCodes.add(authTreeVM);
                     });
-                    AuthTreeVM controllerAuthTreeVM = new AuthTreeVM("", controller, operationCodes);
+                    AuthTreeVM controllerAuthTreeVM = new AuthTreeVM("", controller,false, true, operationCodes);
                     controllerList.add(controllerAuthTreeVM);
                 });
-                AuthTreeVM authTreeVM = new AuthTreeVM("", serviceId, controllerList);
+                AuthTreeVM authTreeVM = new AuthTreeVM("", serviceId,false, true, controllerList);
                 authTreeVMS.add(authTreeVM);
             });
         }

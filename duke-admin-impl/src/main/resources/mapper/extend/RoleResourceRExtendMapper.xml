@@ -1,4 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.duke.microservice.admin.mapper.extend.RoleResourceRExtendMapper">
+
+    <delete id="deleteByRoleId">
+        delete
+        from auth_role_resource_r
+        where role_id = #{roleId, jdbcType=VARCHAR};
+    </delete>
+
+    <insert id="batchSave">
+        <if test="roleResourceRS != null and roleResourceRS.size() > 0">
+            insert into auth_role_resource_r(id, role_id, resource_id)
+            <foreach collection="roleResourceRS" item="roleResourceR" open="values" separator=",">
+                (#{roleResourceR.id, jdbcType=VARCHAR}, #{roleResourceR.roleId, jdbcType=VARCHAR},
+                #{roleResourceR.resourceId, jdbcType=VARCHAR})
+            </foreach>
+        </if>
+    </insert>
+
+    <select id="selectByRoleId" resultType="java.lang.String">
+        select resource_id
+        from auth_role_resource_r
+        where role_id = #{roleId, jdbcType=VARCHAR};
+    </select>
+
 </mapper>

@@ -11,10 +11,21 @@
     </select>
 
     <select id="selectByPathTreeLikeParentId" resultType="com.duke.microservice.admin.domain.basic.Resource">
-        <bind name="str" value="'%'+parentId+'%'"/>
         select id as id, parent_id as parentId, name as name
         from auth_resource
-        where path_tree like #{str,jdbcType=VARCHAR}
+        <if test="parentId != null and parentId != ''">
+            <bind name="str" value="'%'+parentId+'%'"/>
+            where path_tree like #{str,jdbcType=VARCHAR}
+        </if>
+    </select>
+
+    <select id="selectByIds" resultType="com.duke.microservice.admin.domain.basic.Resource">
+        <if test="ids != null and ids.size() > 0">
+            select  id as id, parent_id as parentId, name as name from auth_resource where id in
+            <foreach collection="ids" item="id" separator="," open="(" close=")">
+                #{id, jdbcType=VARCHAR}
+            </foreach>
+        </if>
     </select>
 
 </mapper>

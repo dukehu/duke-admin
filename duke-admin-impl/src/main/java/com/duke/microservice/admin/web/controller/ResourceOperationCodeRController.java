@@ -53,7 +53,7 @@ public class ResourceOperationCodeRController implements ResourceOperationCodeRR
             @ApiImplicitParam(name = "resourceId", value = "资源id", dataType = "string", paramType = "query")
     })
     @ApiOperation(value = "查询某一个资源有哪些接口的权限", notes = "查询某一个资源有哪些接口的权限")
-    @PreAuthorize("hasAuthority('admin') or hasAuthority('admin_resource_operationcode_selectAuthTreeByResourceId')")
+    @PreAuthorize("hasAuthority('admin') or hasAuthority('admin_resource_operationcode_selectAuthTreeByRId')")
     @Override
     public Response<List<AuthTreeVM>> selectAuthTreeByResourceId(String resourceId) {
         return Response.ok(resourceOperationCodeRService.authTree(resourceId));

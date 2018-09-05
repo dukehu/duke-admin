@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.duke.microservice.admin.mapper.extend.RoleExtendMapper" >
+<mapper namespace="com.duke.microservice.admin.mapper.extend.RoleExtendMapper">
+
+    <select id="selectByName" resultType="com.duke.microservice.admin.domain.basic.Role">
+        select id as id, `code` as code, `name` as name, `status`, role_type as roleType, memo, creater, create_time as
+        createTime, modifier,
+        modify_time as modifyTime
+        from auth_role
+        <if test="name != null and name != ''">
+            <bind name="nameStr" value="'%'+name+'%'"/>
+            where name like #{nameStr, jdbcType=VARCHAR}
+        </if>
+    </select>
+
 </mapper>

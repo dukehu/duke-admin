@@ -3,13 +3,12 @@ package com.duke.microservice.admin.api;
 import com.duke.framework.web.Response;
 import com.duke.microservice.admin.AdminConstants;
 import com.duke.microservice.admin.vm.UserDetailVM;
+import com.github.pagehelper.PageInfo;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
 
 /**
  * Created duke on 2018/8/4
@@ -20,10 +19,16 @@ public interface UserRestService {
     /**
      * 用户列表查询
      *
+     * @param keyword 关键字
+     * @param page    当前页
+     * @param size    每页条数
      * @return List<UserListVM>
      */
     @RequestMapping(value = "/user", method = RequestMethod.GET)
-    Response<List<UserDetailVM>> select();
+    Response<PageInfo<UserDetailVM>> select(
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "page", required = false) Integer page,
+            @RequestParam(value = "size", required = false) Integer size);
 
     /**
      * 根据用户id查找

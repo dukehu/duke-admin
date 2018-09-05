@@ -28,4 +28,5 @@ public interface ResourceExtendMapper {
      */
     List<Resource> selectByPathTreeLikeParentId(@Param("parentId") String parentId);
 
+    List<Resource> selectByIds(@Param("ids") List<String> ids);
 }

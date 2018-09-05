@@ -69,6 +69,7 @@ public class OperationCodeService {
         Date date = new Date();
         OperationCode operationCode;
         if (CoreConstants.UPDATE.equals(type)) {
+            ValidationUtils.notEmpty(id, "operationCodeId", "操作码id不能为空！");
             // 修改
             operationCode = this.exist(id);
         } else {

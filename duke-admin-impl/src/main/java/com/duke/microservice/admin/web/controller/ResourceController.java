@@ -69,12 +69,13 @@ public class ResourceController implements ResourceRestService {
     }
 
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "parentId", value = "模块id", dataType = "string", paramType = "query", required = true)
-    })
+            @ApiImplicitParam(name = "parentId", value = "模块id", dataType = "string", paramType = "query"),
+            @ApiImplicitParam(name = "roleId", value = "角色id", dataType = "string", paramType = "query")
+            })
     @ApiOperation(value = "资源树", notes = "资源树")
     @PreAuthorize("hasAuthority('admin') or hasAuthority('admin_resource_resourceTree')")
     @Override
-    public Response<List<ResourceTreeVM>> resourceTree(String parentId) {
-        return Response.ok(resourceService.resourceTree(parentId));
+    public Response<List<ResourceTreeVM>> resourceTree(String parentId, String roleId) {
+        return Response.ok(resourceService.resourceTree(parentId, roleId));
     }
 }
