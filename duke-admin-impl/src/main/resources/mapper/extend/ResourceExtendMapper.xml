@@ -11,7 +11,7 @@
     </select>
 
     <select id="selectByPathTreeLikeParentId" resultType="com.duke.microservice.admin.domain.basic.Resource">
-        select id as id, parent_id as parentId, name as name
+        select id as id, parent_id as parentId, name as name, code as code, type as type, memo as memo
         from auth_resource
         <if test="parentId != null and parentId != ''">
             <bind name="str" value="'%'+parentId+'%'"/>

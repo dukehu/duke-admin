@@ -22,6 +22,10 @@ public class ResourceTreeVM {
 
     private String code;
 
+    private String memo;
+
+    private Integer type;
+
     private String key;
 
     private String parentId;

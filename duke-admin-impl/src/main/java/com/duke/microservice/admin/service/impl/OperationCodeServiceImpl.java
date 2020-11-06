@@ -142,10 +142,11 @@ public class OperationCodeServiceImpl implements IOperationCodeService {
         }
         PageHelper.startPage(page, size);
         List<OperationCode> operationCodes = operationCodeExtendMapper.selectByRequestMethodAndUrl(requestMethod, url);
-        List<OperationCodeDetailVM> operationCodeDetailVMS = new ArrayList<>();
+        List<OperationCodeDetailVM> operationCodeDetailVMS = new Page<>();
         if (!CollectionUtils.isEmpty(operationCodes)) {
             operationCodes.forEach(operationCode -> operationCodeDetailVMS.add(buildOperationCodeDetailVM(operationCode)));
         }
+        BeanUtils.copyProperties(operationCodes, operationCodeDetailVMS);
         return new PageInfo<>(operationCodeDetailVMS);
     }
 

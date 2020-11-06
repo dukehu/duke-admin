@@ -129,7 +129,7 @@ public class ResourceServiceImpl implements IResourceService {
             }
             List<String> finalResourceIds = resourceIds;
             resources.forEach(resource -> {
-                ResourceTreeVM resourceTreeVM = new ResourceTreeVM(resource.getId(), resource.getName(), resource.getCode(),
+                ResourceTreeVM resourceTreeVM = new ResourceTreeVM(resource.getId(), resource.getName(), resource.getCode(), resource.getMemo(), resource.getType(),
                         resource.getId(), resource.getParentId(), resource.getName(), finalResourceIds.contains(resource.getId()), true, null
                 );
                 resourceTreeVMS.add(resourceTreeVM);
