@@ -1,7 +1,7 @@
 package com.duke.microservice.admin.web.controller;
 
 import com.duke.microservice.admin.api.RoleResourceRRestService;
-import com.duke.microservice.admin.service.RoleResourceRService;
+import com.duke.microservice.admin.service.IRoleResourceRService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,6 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class RoleResourceRController implements RoleResourceRRestService {
 
     @Autowired
-    private RoleResourceRService roleResourceRService;
+    private IRoleResourceRService roleResourceRService;
 
 }

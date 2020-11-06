@@ -2,7 +2,7 @@ package com.duke.microservice.admin.web.controller;
 
 import com.duke.framework.web.Response;
 import com.duke.microservice.admin.api.ResourceOperationCodeRRestService;
-import com.duke.microservice.admin.service.ResourceOperationCodeRService;
+import com.duke.microservice.admin.service.IResourceOperationCodeRService;
 import com.duke.microservice.admin.vm.AuthTreeVM;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -23,7 +23,7 @@ import java.util.List;
 public class ResourceOperationCodeRController implements ResourceOperationCodeRRestService {
 
     @Autowired
-    private ResourceOperationCodeRService resourceOperationCodeRService;
+    private IResourceOperationCodeRService resourceOperationCodeRService;
 
     @ApiImplicitParams({
             @ApiImplicitParam(name = "resourceId", value = "资源id", dataType = "string", paramType = "query", required = true),

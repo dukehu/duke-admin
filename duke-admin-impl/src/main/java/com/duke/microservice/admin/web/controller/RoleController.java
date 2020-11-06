@@ -3,7 +3,8 @@ package com.duke.microservice.admin.web.controller;
 import com.duke.framework.CoreConstants;
 import com.duke.framework.web.Response;
 import com.duke.microservice.admin.api.RoleRestService;
-import com.duke.microservice.admin.service.RoleService;
+import com.duke.microservice.admin.service.IRoleService;
+import com.duke.microservice.admin.service.impl.RoleServiceImpl;
 import com.duke.microservice.admin.vm.RoleDetailVM;
 import com.duke.microservice.admin.vm.RoleSetVM;
 import com.github.pagehelper.PageInfo;
@@ -27,7 +28,7 @@ import java.util.List;
 public class RoleController implements RoleRestService {
 
     @Autowired
-    private RoleService roleService;
+    private IRoleService roleService;
 
     @ApiOperation(value = "新增角色", notes = "新增角色")
     @PreAuthorize("hasAuthority('admin') or hasAuthority('admin_role_save')")

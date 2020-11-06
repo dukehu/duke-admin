@@ -1,4 +1,4 @@
-package com.duke.microservice.admin.service;
+package com.duke.microservice.admin.service.impl;
 
 import com.duke.framework.CoreConstants;
 import com.duke.framework.exception.BusinessException;
@@ -9,6 +9,7 @@ import com.duke.microservice.admin.AdminConstants;
 import com.duke.microservice.admin.domain.basic.Role;
 import com.duke.microservice.admin.mapper.basic.RoleMapper;
 import com.duke.microservice.admin.mapper.extend.RoleExtendMapper;
+import com.duke.microservice.admin.service.*;
 import com.duke.microservice.admin.vm.RoleDetailVM;
 import com.duke.microservice.admin.vm.RoleSetVM;
 import com.github.pagehelper.Page;
@@ -30,7 +31,7 @@ import java.util.UUID;
  */
 @Service
 @Transactional
-public class RoleService {
+public class RoleServiceImpl implements IRoleService {
 
     @Autowired
     private RoleMapper roleMapper;
@@ -39,25 +40,19 @@ public class RoleService {
     private RoleExtendMapper roleExtendMapper;
 
     @Autowired
-    private ResourceService resourceService;
+    private IResourceService resourceService;
 
     @Autowired
-    private UserService userService;
+    private IUserService userService;
 
     @Autowired
-    private RoleResourceRService roleResourceRService;
+    private IRoleResourceRService roleResourceRService;
 
     @Autowired
-    private UserRoleRService userRoleRService;
+    private IUserRoleRService userRoleRService;
 
 
-    /**
-     * 新增/修改
-     *
-     * @param type save/update
-     * @param id   主键
-     * @param vm   角色设置vm
-     */
+    @Override
     public void saveOrUpdate(String type, String id, RoleSetVM vm) {
         ValidationUtils.validate(vm, "roleSetVM", "参数校验失败！");
         List<String> resourceIds = vm.getResourceIds();
@@ -108,22 +103,11 @@ public class RoleService {
         userRoleRService.batchSave(roleId, userIds);
     }
 
-    /**
-     * 删除
-     *
-     * @param id 主键
-     */
+    @Override
     public void delete(String id) {
     }
 
-    /**
-     * 角色列表
-     *
-     * @param name 角色名称
-     * @param page 当前页码
-     * @param size 每页条数
-     * @return List<RoleDetailVM>
-     */
+    @Override
     @Transactional(readOnly = true)
     public PageInfo<RoleDetailVM> select(String name, Integer page, Integer size) {
         List<RoleDetailVM> roleDetailVMS = new Page<>();
@@ -140,12 +124,7 @@ public class RoleService {
         return new PageInfo<>(roleDetailVMS);
     }
 
-    /**
-     * 角色详情
-     *
-     * @param id 主键
-     * @return RoleDetailVM
-     */
+    @Override
     @Transactional(readOnly = true)
     public RoleDetailVM selectById(String id) {
         Role role = this.exit(id);
@@ -162,12 +141,7 @@ public class RoleService {
         return new RoleDetailVM(role.getId(), role.getName(), 99, role.getRoleType(), "胡萝卜", role.getStatus(), role.getMemo());
     }
 
-    /**
-     * 校验角色id有效性
-     *
-     * @param id 角色id
-     * @return Role
-     */
+    @Override
     @Transactional
     public Role exit(String id) {
         ValidationUtils.notEmpty(id, "role", "角色id不能为空！");
@@ -178,12 +152,7 @@ public class RoleService {
         return role;
     }
 
-    /**
-     * 保存授权
-     *
-     * @param roleId      角色id
-     * @param resourceIds 资源id集合
-     */
+    @Override
     public void saveAuth(String roleId, List<String> resourceIds) {
         if (!CollectionUtils.isEmpty(resourceIds)) {
             this.exit(roleId);

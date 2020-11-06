@@ -1,4 +1,4 @@
-package com.duke.microservice.admin.service;
+package com.duke.microservice.admin.service.impl;
 
 import com.duke.framework.CoreConstants;
 import com.duke.framework.exception.BusinessException;
@@ -7,10 +7,9 @@ import com.duke.framework.utils.SecurityUtils;
 import com.duke.framework.utils.ValidationUtils;
 import com.duke.microservice.admin.AdminConstants;
 import com.duke.microservice.admin.domain.basic.OperationCode;
-import com.duke.microservice.admin.domain.extend.ResourceOperationCode;
 import com.duke.microservice.admin.mapper.basic.OperationCodeMapper;
 import com.duke.microservice.admin.mapper.extend.OperationCodeExtendMapper;
-import com.duke.microservice.admin.vm.AuthTreeVM;
+import com.duke.microservice.admin.service.IOperationCodeService;
 import com.duke.microservice.admin.vm.OperationCodeDetailVM;
 import com.duke.microservice.admin.vm.OperationCodeSetVM;
 import com.github.pagehelper.Page;
@@ -23,15 +22,17 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Created duke on 2018/8/4
  */
 @Service
 @Transactional
-public class OperationCodeService {
+public class OperationCodeServiceImpl implements IOperationCodeService {
 
     @Autowired
     private OperationCodeMapper operationCodeMapper;
@@ -39,16 +40,7 @@ public class OperationCodeService {
     @Autowired
     private OperationCodeExtendMapper operationCodeExtendMapper;
 
-    @Autowired
-    private ResourceService resourceService;
-
-    /**
-     * 添加操作码
-     *
-     * @param type 类型，save/update
-     * @param id   主键，update时必传
-     * @param vm   操作码新增vm
-     */
+    @Override
     public void saveOrUpdate(String type, String id, OperationCodeSetVM vm) {
         ValidationUtils.validate(vm, "operationCodeSaveVM", "参数校验失败！");
         // 服务id
@@ -99,25 +91,13 @@ public class OperationCodeService {
         }
     }
 
-    /**
-     * 根据主键删除
-     *
-     * @param id 主键
-     */
+    @Override
     public void delete(String id) {
         this.exist(id);
         operationCodeMapper.deleteByPrimaryKey(id);
     }
 
-    /**
-     * 操作码列表
-     *
-     * @param serviceId  服务
-     * @param controller controller
-     * @param page       起始页
-     * @param size       每页条数
-     * @return PageInfo
-     */
+    @Override
     @Transactional(readOnly = true)
     public PageInfo<OperationCodeDetailVM> select(String serviceId, String controller, Integer page, Integer size) {
         if (ObjectUtils.isEmpty(page) || ObjectUtils.isEmpty(size)) {
@@ -144,58 +124,39 @@ public class OperationCodeService {
         );
     }
 
-    /**
-     * 根据主键查找
-     *
-     * @param id 主键
-     * @return OperationCodeDetailVM
-     */
+    @Override
     @Transactional(readOnly = true)
     public OperationCodeDetailVM selectById(String id) {
         return buildOperationCodeDetailVM(this.exist(id));
     }
 
-
-    /**
-     * 根据url和请求方式查找
-     *
-     * @param requestMethod 请求方式
-     * @param url           url
-     * @return List<OperationCodeDetailVM>
-     */
+    @Override
     @Transactional(readOnly = true)
-    public List<OperationCodeDetailVM> selectByRequestMethodAndUrl(String requestMethod, String url) {
+    public PageInfo<OperationCodeDetailVM> selectByRequestMethodAndUrl(String requestMethod, String url, Integer page, Integer size) {
         if (!ObjectUtils.isEmpty(requestMethod) && !AdminConstants.RequestMethod.containsKey(requestMethod)) {
             throw new BusinessException("错误的请求方式！");
         }
+        if (ObjectUtils.isEmpty(page) || ObjectUtils.isEmpty(size)) {
+            page = 0;
+            size = 10;
+        }
+        PageHelper.startPage(page, size);
         List<OperationCode> operationCodes = operationCodeExtendMapper.selectByRequestMethodAndUrl(requestMethod, url);
         List<OperationCodeDetailVM> operationCodeDetailVMS = new ArrayList<>();
         if (!CollectionUtils.isEmpty(operationCodes)) {
             operationCodes.forEach(operationCode -> operationCodeDetailVMS.add(buildOperationCodeDetailVM(operationCode)));
         }
-        return operationCodeDetailVMS;
+        return new PageInfo<>(operationCodeDetailVMS);
     }
 
-
-    /**
-     * 操作码controller集合
-     *
-     * @param serviceId 服务id
-     * @return List<String>
-     */
+    @Override
     @Transactional(readOnly = true)
     public List<String> controllerList(String serviceId) {
         // todo 校验服务id
         return operationCodeExtendMapper.controllerList(serviceId);
     }
 
-
-    /**
-     * 校验主键有效性
-     *
-     * @param id 主键
-     * @return OperationCode
-     */
+    @Override
     @Transactional(readOnly = true)
     public OperationCode exist(String id) {
         ValidationUtils.notEmpty(id, "id", "主键不能为空！");
@@ -206,12 +167,7 @@ public class OperationCodeService {
         return operationCode;
     }
 
-    /**
-     * 校验一批操作码id是否合法
-     *
-     * @param ids 操作码id集合
-     * @return List<OperationCode>
-     */
+    @Override
     @Transactional(readOnly = true)
     public List<OperationCode> exist(List<String> ids) {
         ValidationUtils.notEmpty(ids, "ids", "操作码id集合不能为空！");

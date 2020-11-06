@@ -3,7 +3,7 @@ package com.duke.microservice.admin.web.controller;
 import com.duke.framework.CoreConstants;
 import com.duke.framework.web.Response;
 import com.duke.microservice.admin.api.ModuleRestService;
-import com.duke.microservice.admin.service.ModuleService;
+import com.duke.microservice.admin.service.IModuleService;
 import com.duke.microservice.admin.vm.ModuleDetailVM;
 import com.duke.microservice.admin.vm.ModuleSetVM;
 import io.swagger.annotations.Api;
@@ -22,7 +22,7 @@ import java.util.List;
 public class ModuleController implements ModuleRestService {
 
     @Autowired
-    private ModuleService moduleService;
+    private IModuleService moduleService;
 
     @ApiOperation(value = "新增模块", notes = "新增模块")
     @PreAuthorize("hasAuthority('admin') or hasAuthority('admin_module_save')")

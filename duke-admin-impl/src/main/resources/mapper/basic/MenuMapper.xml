@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.duke.microservice.admin.mapper.basic.MenuMapper">
+    <resultMap id="BaseResultMap" type="com.duke.microservice.admin.domain.basic.Menu">
+        <id column="id" property="id" jdbcType="VARCHAR"/>
+        <result column="code" property="code" jdbcType="VARCHAR"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="icon" property="icon" jdbcType="VARCHAR"/>
+        <result column="parent_id" property="parentId" jdbcType="VARCHAR"/>
+        <result column="level_no" property="levelNo" jdbcType="INTEGER"/>
+        <result column="is_leaf" property="isLeaf" jdbcType="INTEGER"/>
+        <result column="url" property="url" jdbcType="VARCHAR"/>
+        <result column="service_id" property="serviceId" jdbcType="VARCHAR"/>
+        <result column="menu_order" property="menuOrder" jdbcType="INTEGER"/>
+        <result column="params" property="params" jdbcType="VARCHAR"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+        <result column="is_deleted" property="isDeleted" jdbcType="INTEGER"/>
+        <result column="create_user" property="createUser" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="VARCHAR"/>
+        <result column="update_time" property="updateTime" jdbcType="VARCHAR"/>
+        <result column="update_user" property="updateUser" jdbcType="VARCHAR"/>
+    </resultMap>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete
+        from menu
+        where id = #{id,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.duke.microservice.admin.domain.basic.Menu">
+        insert into menu (id, code, name,
+                          icon, parent_id, level_no,
+                          is_leaf, url, service_id,
+                          menu_order, params, remark,
+                          is_deleted, create_user, create_time,
+                          update_time, update_user)
+        values (#{id,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR},
+                #{icon,jdbcType=VARCHAR}, #{parentId,jdbcType=VARCHAR}, #{levelNo,jdbcType=INTEGER},
+                #{isLeaf,jdbcType=INTEGER}, #{url,jdbcType=VARCHAR}, #{serviceId,jdbcType=VARCHAR},
+                #{menuOrder,jdbcType=INTEGER}, #{params,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR},
+                #{isDeleted,jdbcType=INTEGER}, #{createUser,jdbcType=VARCHAR}, #{createTime,jdbcType=VARCHAR},
+                #{updateTime,jdbcType=VARCHAR}, #{updateUser,jdbcType=VARCHAR})
+    </insert>
+    <update id="updateByPrimaryKey" parameterType="com.duke.microservice.admin.domain.basic.Menu">
+        update menu
+        set code        = #{code,jdbcType=VARCHAR},
+            name        = #{name,jdbcType=VARCHAR},
+            icon        = #{icon,jdbcType=VARCHAR},
+            parent_id   = #{parentId,jdbcType=VARCHAR},
+            level_no    = #{levelNo,jdbcType=INTEGER},
+            is_leaf     = #{isLeaf,jdbcType=INTEGER},
+            url         = #{url,jdbcType=VARCHAR},
+            service_id  = #{serviceId,jdbcType=VARCHAR},
+            menu_order  = #{menuOrder,jdbcType=INTEGER},
+            params      = #{params,jdbcType=VARCHAR},
+            remark      = #{remark,jdbcType=VARCHAR},
+            is_deleted  = #{isDeleted,jdbcType=INTEGER},
+            create_user = #{createUser,jdbcType=VARCHAR},
+            create_time = #{createTime,jdbcType=VARCHAR},
+            update_time = #{updateTime,jdbcType=VARCHAR},
+            update_user = #{updateUser,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select id,
+               code,
+               name,
+               icon,
+               parent_id,
+               level_no,
+               is_leaf,
+               url,
+               service_id,
+               menu_order,
+               params,
+               remark,
+               is_deleted,
+               create_user,
+               create_time,
+               update_time,
+               update_user
+        from menu
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+    <select id="selectAll" resultMap="BaseResultMap">
+        select id,
+               code,
+               name,
+               icon,
+               parent_id,
+               level_no,
+               is_leaf,
+               url,
+               service_id,
+               menu_order,
+               params,
+               remark,
+               is_deleted,
+               create_user,
+               create_time,
+               update_time,
+               update_user
+        from menu
+    </select>
+</mapper>

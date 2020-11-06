@@ -1,4 +1,4 @@
-package com.duke.microservice.admin.service;
+package com.duke.microservice.admin.service.impl;
 
 import com.duke.framework.security.AuthUserDetails;
 import com.duke.framework.utils.SecurityUtils;
@@ -7,6 +7,7 @@ import com.duke.microservice.admin.AdminConstants;
 import com.duke.microservice.admin.domain.basic.Resource;
 import com.duke.microservice.admin.mapper.basic.ResourceMapper;
 import com.duke.microservice.admin.mapper.extend.ResourceExtendMapper;
+import com.duke.microservice.admin.service.IModuleService;
 import com.duke.microservice.admin.vm.ModuleDetailVM;
 import com.duke.microservice.admin.vm.ModuleSetVM;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +19,13 @@ import org.springframework.util.ObjectUtils;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created duke on 2018/9/1
  */
 @Service
 @Transactional
-public class ModuleService {
+public class ModuleServiceImpl implements IModuleService {
 
     @Autowired
     private ResourceMapper resourceMapper;
@@ -33,13 +33,7 @@ public class ModuleService {
     @Autowired
     private ResourceExtendMapper resourceExtendMapper;
 
-    /**
-     * 添加模块
-     *
-     * @param type save/update
-     * @param id   主键 update 时必传
-     * @param vm   模块设置vm
-     */
+    @Override
     public void saveOrUpdate(String type, String id, ModuleSetVM vm) {
         ValidationUtils.validate(vm, "moduleSetVM", "参数校验失败！");
 
@@ -69,11 +63,7 @@ public class ModuleService {
         resourceMapper.insert(resource);
     }
 
-    /**
-     * 模块列表
-     *
-     * @return List<ModuleDetailVM>
-     */
+    @Override
     @Transactional(readOnly = true)
     public List<ModuleDetailVM> select() {
         List<ModuleDetailVM> moduleDetailVMS = new ArrayList<>();

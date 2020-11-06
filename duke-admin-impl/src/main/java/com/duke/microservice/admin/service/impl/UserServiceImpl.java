@@ -1,10 +1,11 @@
-package com.duke.microservice.admin.service;
+package com.duke.microservice.admin.service.impl;
 
 import com.duke.framework.exception.BusinessException;
 import com.duke.framework.utils.ValidationUtils;
 import com.duke.microservice.admin.domain.basic.User;
 import com.duke.microservice.admin.mapper.basic.UserMapper;
 import com.duke.microservice.admin.mapper.extend.UserExtendMapper;
+import com.duke.microservice.admin.service.IUserService;
 import com.duke.microservice.admin.vm.UserDetailVM;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -23,7 +24,7 @@ import java.util.List;
  */
 @Service
 @Transactional
-public class UserService {
+public class UserServiceImpl implements IUserService {
 
     @Autowired
     private UserMapper userMapper;
@@ -31,14 +32,7 @@ public class UserService {
     @Autowired
     private UserExtendMapper userExtendMapper;
 
-    /**
-     * 用户列表查询
-     *
-     * @param keyword 关键字
-     * @param page    当前页码
-     * @param size    每页条数
-     * @return List<UserDetailVM>
-     */
+    @Override
     @Transactional(readOnly = true)
     public PageInfo<UserDetailVM> select(String keyword, Integer page, Integer size) {
         if (ObjectUtils.isEmpty(page) || ObjectUtils.isEmpty(size)) {
@@ -56,12 +50,7 @@ public class UserService {
         return new PageInfo<>(userDetailVMS);
     }
 
-    /**
-     * 根据用户id查找
-     *
-     * @param id 用户id
-     * @return UserDetailVM
-     */
+    @Override
     @Transactional(readOnly = true)
     public UserDetailVM selectById(String id) {
         User user = this.exist(id);
@@ -81,12 +70,7 @@ public class UserService {
         );
     }
 
-    /**
-     * 校验用户id有效性
-     *
-     * @param id 用户id
-     * @return User
-     */
+    @Override
     @Transactional(readOnly = true)
     public User exist(String id) {
         ValidationUtils.notEmpty(id, "userId", "用户id不能为空！");
@@ -97,11 +81,7 @@ public class UserService {
         return user;
     }
 
-    /**
-     * 批量校验用户id集合有效性
-     *
-     * @param ids 用户id集合
-     */
+    @Override
     @Transactional(readOnly = true)
     public List<User> exist(List<String> ids) {
         ValidationUtils.notEmpty(ids, "userIds", "用户id集合不能为空！");

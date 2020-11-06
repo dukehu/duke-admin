@@ -7,30 +7,33 @@ import lombok.Setter;
 
 import java.util.List;
 
-/**
- * Created duke on 2018/8/31
- */
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class ResourceTreeVM {
+@AllArgsConstructor
+public class MenuVM {
 
     private String id;
 
-    private String name;
-
     private String code;
 
-    private String key;
+    private String name;
+
+    private String icon;
 
     private String parentId;
 
-    private String title;
+    private Integer levelNo;
 
-    private Boolean checked = false;
+    private Integer isLeaf;
 
-    private Boolean expand = true;
+    private String url;
 
-    private List<ResourceTreeVM> children;
+    private Integer menuOrder;
+
+    private String params;
+
+    private String remark;
+
+    public List<MenuVM> menuVMS;
 }

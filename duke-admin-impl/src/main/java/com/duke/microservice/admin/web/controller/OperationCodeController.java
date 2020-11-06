@@ -3,8 +3,7 @@ package com.duke.microservice.admin.web.controller;
 import com.duke.framework.CoreConstants;
 import com.duke.framework.web.Response;
 import com.duke.microservice.admin.api.OperationCodeRestService;
-import com.duke.microservice.admin.service.OperationCodeService;
-import com.duke.microservice.admin.vm.AuthTreeVM;
+import com.duke.microservice.admin.service.IOperationCodeService;
 import com.duke.microservice.admin.vm.OperationCodeDetailVM;
 import com.duke.microservice.admin.vm.OperationCodeSetVM;
 import com.github.pagehelper.PageInfo;
@@ -15,6 +14,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -27,7 +27,7 @@ import java.util.List;
 public class OperationCodeController implements OperationCodeRestService {
 
     @Autowired
-    private OperationCodeService operationCodeService;
+    private IOperationCodeService operationCodeService;
 
     @ApiOperation(value = "新增操作码", notes = "新增操作码")
     @PreAuthorize("hasAuthority('admin') or hasAuthority('admin_operation_code_save')")
@@ -90,8 +90,9 @@ public class OperationCodeController implements OperationCodeRestService {
     @ApiOperation(value = "根据url和请求方式查找", notes = "根据url和请求方式查找")
     @PreAuthorize("hasAuthority('admin') or hasAuthority('admin_operation_code_selectByRequestMethodAndUrl')")
     @Override
-    public Response<List<OperationCodeDetailVM>> selectByRequestMethodAndUrl(String requestMethod, String url) {
-        return Response.ok(operationCodeService.selectByRequestMethodAndUrl(requestMethod, url));
+    public Response<PageInfo<OperationCodeDetailVM>> selectByRequestMethodAndUrl(String requestMethod, String url, Integer page,
+                                                                                 Integer size) {
+        return Response.ok(operationCodeService.selectByRequestMethodAndUrl(requestMethod, url, page, size));
     }
 
 

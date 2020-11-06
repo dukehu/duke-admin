@@ -4,7 +4,7 @@ import com.duke.framework.security.AuthUserDetails;
 import com.duke.framework.utils.SecurityUtils;
 import com.duke.framework.web.Response;
 import com.duke.microservice.admin.api.UserRestService;
-import com.duke.microservice.admin.service.UserService;
+import com.duke.microservice.admin.service.IUserService;
 import com.duke.microservice.admin.vm.UserDetailVM;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
@@ -14,10 +14,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 /**
  * Created duke on 2018/8/4
@@ -27,7 +24,7 @@ import java.util.List;
 public class UserController implements UserRestService {
 
     @Autowired
-    private UserService userService;
+    private IUserService userService;
 
     @ApiImplicitParams({
             @ApiImplicitParam(name = "keyword", value = "关键字", dataType = "string", paramType = "query", required = true),

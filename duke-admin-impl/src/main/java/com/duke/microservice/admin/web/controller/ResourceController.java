@@ -3,7 +3,7 @@ package com.duke.microservice.admin.web.controller;
 import com.duke.framework.CoreConstants;
 import com.duke.framework.web.Response;
 import com.duke.microservice.admin.api.ResourceRestService;
-import com.duke.microservice.admin.service.ResourceService;
+import com.duke.microservice.admin.service.IResourceService;
 import com.duke.microservice.admin.vm.ResourceDetailVM;
 import com.duke.microservice.admin.vm.ResourceSetVM;
 import com.duke.microservice.admin.vm.ResourceTreeVM;
@@ -26,7 +26,7 @@ import java.util.List;
 public class ResourceController implements ResourceRestService {
 
     @Autowired
-    private ResourceService resourceService;
+    private IResourceService resourceService;
 
     @ApiOperation(value = "新增资源", notes = "新增资源")
     @PreAuthorize("hasAuthority('admin') or hasAuthority('admin_resource_save')")
@@ -71,7 +71,7 @@ public class ResourceController implements ResourceRestService {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "parentId", value = "模块id", dataType = "string", paramType = "query"),
             @ApiImplicitParam(name = "roleId", value = "角色id", dataType = "string", paramType = "query")
-            })
+    })
     @ApiOperation(value = "资源树", notes = "资源树")
     @PreAuthorize("hasAuthority('admin') or hasAuthority('admin_resource_resourceTree')")
     @Override

@@ -1,8 +1,10 @@
-package com.duke.microservice.admin.service;
+package com.duke.microservice.admin.service.impl;
 
 import com.duke.microservice.admin.domain.basic.RoleResourceR;
 import com.duke.microservice.admin.mapper.basic.RoleResourceRMapper;
 import com.duke.microservice.admin.mapper.extend.RoleResourceRExtendMapper;
+import com.duke.microservice.admin.service.IRoleResourceRService;
+import com.duke.microservice.admin.service.IRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +19,7 @@ import java.util.UUID;
  */
 @Service
 @Transactional
-public class RoleResourceRService {
+public class RoleResourceRServiceImpl implements IRoleResourceRService {
 
     @Autowired
     private RoleResourceRMapper roleResourceRMapper;
@@ -26,24 +28,15 @@ public class RoleResourceRService {
     private RoleResourceRExtendMapper roleResourceRExtendMapper;
 
     @Autowired
-    private RoleService roleService;
+    private IRoleService roleService;
 
-    /**
-     * 根据角色id删除角色资源关系数据
-     *
-     * @param roleId 角色id
-     */
+    @Override
     public void deleteByRoleId(String roleId) {
         roleService.exit(roleId);
         roleResourceRExtendMapper.deleteByRoleId(roleId);
     }
 
-    /**
-     * 根据资源id集合和角色id新增
-     *
-     * @param roleId      角色id
-     * @param resourceIds 资源id集合
-     */
+    @Override
     public void batchSave(String roleId, List<String> resourceIds) {
         if (!CollectionUtils.isEmpty(resourceIds)) {
             roleService.exit(roleId);
@@ -61,12 +54,7 @@ public class RoleResourceRService {
         }
     }
 
-    /**
-     * 根据角色id查找资源id集合
-     *
-     * @param roleId 角色id
-     * @return List<String>
-     */
+    @Override
     @Transactional(readOnly = true)
     public List<String> selectByRoleId(String roleId) {
         roleService.exit(roleId);

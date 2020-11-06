@@ -1,4 +1,4 @@
-package com.duke.microservice.admin.service;
+package com.duke.microservice.admin.service.impl;
 
 import com.duke.framework.CoreConstants;
 import com.duke.framework.exception.BusinessException;
@@ -8,6 +8,10 @@ import com.duke.framework.utils.ValidationUtils;
 import com.duke.microservice.admin.domain.basic.Resource;
 import com.duke.microservice.admin.mapper.basic.ResourceMapper;
 import com.duke.microservice.admin.mapper.extend.ResourceExtendMapper;
+import com.duke.microservice.admin.service.IModuleService;
+import com.duke.microservice.admin.service.IResourceOperationCodeRService;
+import com.duke.microservice.admin.service.IResourceService;
+import com.duke.microservice.admin.service.IRoleResourceRService;
 import com.duke.microservice.admin.vm.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,7 +28,7 @@ import java.util.List;
  */
 @Service
 @Transactional
-public class ResourceService {
+public class ResourceServiceImpl implements IResourceService {
 
     @Autowired
     private ResourceMapper resourceMapper;
@@ -33,21 +37,15 @@ public class ResourceService {
     private ResourceExtendMapper resourceExtendMapper;
 
     @Autowired
-    private ResourceOperationCodeRService resourceOperationCodeRService;
+    private IResourceOperationCodeRService resourceOperationCodeRService;
 
     @Autowired
-    private ModuleService moduleService;
+    private IModuleService moduleService;
 
     @Autowired
-    private RoleResourceRService roleResourceRService;
+    private IRoleResourceRService roleResourceRService;
 
-    /**
-     * 新增/修改
-     *
-     * @param type save/update
-     * @param id   主键，update必传
-     * @param vm   新增修改vm
-     */
+    @Override
     public void saveOrUpdate(String type, String id, ResourceSetVM vm) {
         ValidationUtils.validate(vm, "resourceSetVM", "参数校验失败！");
 
@@ -100,22 +98,13 @@ public class ResourceService {
 
     }
 
-    /**
-     * 删除资源
-     *
-     * @param id 主键
-     */
+    @Override
     public void delete(String id) {
         this.exist(id);
         resourceMapper.deleteByPrimaryKey(id);
     }
 
-    /**
-     * 资源详情
-     *
-     * @param id 主键
-     * @return ResourceDetailVM
-     */
+    @Override
     @Transactional(readOnly = true)
     public ResourceDetailVM select(String id) {
         Resource resource = this.exist(id);
@@ -128,13 +117,7 @@ public class ResourceService {
         );
     }
 
-    /**
-     * 资源树
-     *
-     * @param roleId   角色id
-     * @param parentId 父节点id
-     * @return List<ResourceTreeVM>
-     */
+    @Override
     @Transactional(readOnly = true)
     public List<ResourceTreeVM> resourceTree(String parentId, String roleId) {
         List<ResourceTreeVM> resourceTreeVMS = new ArrayList<>();
@@ -146,7 +129,7 @@ public class ResourceService {
             }
             List<String> finalResourceIds = resourceIds;
             resources.forEach(resource -> {
-                ResourceTreeVM resourceTreeVM = new ResourceTreeVM(
+                ResourceTreeVM resourceTreeVM = new ResourceTreeVM(resource.getId(), resource.getName(), resource.getCode(),
                         resource.getId(), resource.getParentId(), resource.getName(), finalResourceIds.contains(resource.getId()), true, null
                 );
                 resourceTreeVMS.add(resourceTreeVM);
@@ -191,12 +174,7 @@ public class ResourceService {
         return treeNode;
     }
 
-    /**
-     * 校验资源主键
-     *
-     * @param id 主键
-     * @return Resource
-     */
+    @Override
     @Transactional(readOnly = true)
     public Resource exist(String id) {
         ValidationUtils.notEmpty(id, "id", "主键不能为空！");
@@ -207,11 +185,7 @@ public class ResourceService {
         return resource;
     }
 
-    /**
-     * 批量校验资源id合法性
-     *
-     * @param ids 资源id集合
-     */
+    @Override
     @Transactional(readOnly = true)
     public List<Resource> exist(List<String> ids) {
         ValidationUtils.notEmpty(ids, "resourceIds", "资源id集合不能为空！");

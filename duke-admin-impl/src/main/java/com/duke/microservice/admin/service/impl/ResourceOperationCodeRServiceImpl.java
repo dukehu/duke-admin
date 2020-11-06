@@ -1,9 +1,12 @@
-package com.duke.microservice.admin.service;
+package com.duke.microservice.admin.service.impl;
 
 import com.duke.microservice.admin.domain.basic.ResourceOperationCodeR;
 import com.duke.microservice.admin.domain.extend.ResourceOperationCode;
 import com.duke.microservice.admin.mapper.basic.ResourceOperationCodeRMapper;
 import com.duke.microservice.admin.mapper.extend.ResourceOperationCodeRExtendMapper;
+import com.duke.microservice.admin.service.IOperationCodeService;
+import com.duke.microservice.admin.service.IResourceOperationCodeRService;
+import com.duke.microservice.admin.service.IResourceService;
 import com.duke.microservice.admin.vm.AuthTreeVM;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +22,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @Transactional
-public class ResourceOperationCodeRService {
+public class ResourceOperationCodeRServiceImpl implements IResourceOperationCodeRService {
 
     @Autowired
     private ResourceOperationCodeRMapper resourceOperationCodeRMapper;
@@ -28,17 +31,12 @@ public class ResourceOperationCodeRService {
     private ResourceOperationCodeRExtendMapper resourceOperationCodeRExtendMapper;
 
     @Autowired
-    private ResourceService resourceService;
+    private IResourceService resourceService;
 
     @Autowired
-    private OperationCodeService operationCodeService;
+    private IOperationCodeService operationCodeService;
 
-    /**
-     * 保存资源与操作码的关系
-     *
-     * @param resourceId      资源id
-     * @param operationCodeId 操作码id
-     */
+    @Override
     public void save(String resourceId, String operationCodeId) {
         resourceService.exist(resourceId);
         operationCodeService.exist(operationCodeId);
@@ -53,12 +51,7 @@ public class ResourceOperationCodeRService {
         }
     }
 
-    /**
-     * 权限树
-     *
-     * @param resourceId 资源id
-     * @return List<AuthTreeVM>
-     */
+    @Override
     @Transactional(readOnly = true)
     public List<AuthTreeVM> authTree(String resourceId) {
         resourceService.exist(resourceId);
@@ -87,22 +80,17 @@ public class ResourceOperationCodeRService {
                         AuthTreeVM authTreeVM = new AuthTreeVM(id, name + "：(" + requestMethod + path + ")", false, true, null);
                         operationCodes.add(authTreeVM);
                     });
-                    AuthTreeVM controllerAuthTreeVM = new AuthTreeVM("", controller,false, true, operationCodes);
+                    AuthTreeVM controllerAuthTreeVM = new AuthTreeVM("", controller, false, true, operationCodes);
                     controllerList.add(controllerAuthTreeVM);
                 });
-                AuthTreeVM authTreeVM = new AuthTreeVM("", serviceId,false, true, controllerList);
+                AuthTreeVM authTreeVM = new AuthTreeVM("", serviceId, false, true, controllerList);
                 authTreeVMS.add(authTreeVM);
             });
         }
         return authTreeVMS;
     }
 
-    /**
-     * 取消授权
-     *
-     * @param resourceId       资源id
-     * @param operationCodeIds 操作码id集合
-     */
+    @Override
     public void cancelAuthorize(String resourceId, List<String> operationCodeIds) {
         resourceService.exist(resourceId);
         operationCodeService.exist(operationCodeIds);

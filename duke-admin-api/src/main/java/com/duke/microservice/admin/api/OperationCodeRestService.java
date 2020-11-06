@@ -80,12 +80,16 @@ public interface OperationCodeRestService {
      *
      * @param requestMethod 请求方式
      * @param url           url
+     *                           * @param page       起始页
+     *      * @param size       每页条数
      * @return List<OperationCodeDetailVM>
      */
     @RequestMapping(value = "/operation_code/request_method_url", method = RequestMethod.GET)
-    Response<List<OperationCodeDetailVM>> selectByRequestMethodAndUrl(
+    Response<PageInfo<OperationCodeDetailVM>> selectByRequestMethodAndUrl(
             @RequestParam(value = "requestMethod", required = false) String requestMethod,
-            @RequestParam(value = "url", required = false) String url);
+            @RequestParam(value = "url", required = false) String url,
+            @RequestParam(value = "page", required = false) Integer page,
+            @RequestParam(value = "size", required = false) Integer size);
 
     /**
      * 操作码controller集合
